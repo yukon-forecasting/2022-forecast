@@ -1,0 +1,4 @@
+model,MAPE,SDMAPE,width,p.in,absmax,meanbias
+fifdj ~ amatc + msstc + pice,2.93,2.74,8.24,0.87,9,-0.93
+qdj ~ amatc + msstc + pice,2.6,2.87,7.71,0.73,9,-1
+mdj ~ amatc + msstc + pice,2.2,1.93,8.21,0.87,6,-1.8
