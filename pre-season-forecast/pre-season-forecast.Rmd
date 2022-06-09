@@ -33,8 +33,8 @@ theme_set(theme_bw())
 ## Data
 
 ```{r data}
-environment <- read_csv("https://raw.githubusercontent.com/yukon-forecasting/data/5b14d42c0fea20b42478e2fd0a6d390a498b7e4f/data/environment/environment.csv")
-cpue <- read_csv("https://raw.githubusercontent.com/yukon-forecasting/data/5b14d42c0fea20b42478e2fd0a6d390a498b7e4f/data/cpue/cpue.csv")
+environment <- read_csv("https://raw.githubusercontent.com/yukon-forecasting/data/2022-preseason/data/environment/environment.csv")
+cpue <- read_csv("https://raw.githubusercontent.com/yukon-forecasting/data/2022-preseason/data/cpue/cpue.csv")
 yukon <- left_join(environment, cpue)
 ```
 

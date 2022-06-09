@@ -22,19 +22,19 @@ theme_set(theme_bw())
 ## Data
 
 ``` r
-environment <- read_csv("https://raw.githubusercontent.com/yukon-forecasting/data/5b14d42c0fea20b42478e2fd0a6d390a498b7e4f/data/environment/environment.csv")
+environment <- read_csv("https://raw.githubusercontent.com/yukon-forecasting/data/2022-preseason/data/environment/environment.csv")
 ```
 
     ## Rows: 62 Columns: 4
     ## ── Column specification ────────────────────────────────────────────────────────
     ## Delimiter: ","
     ## dbl (4): year, amatc, pice, msstc
-    ##
+    ## 
     ## ℹ Use `spec()` to retrieve the full column specification for this data.
     ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 ``` r
-cpue <- read_csv("https://raw.githubusercontent.com/yukon-forecasting/data/5b14d42c0fea20b42478e2fd0a6d390a498b7e4f/data/cpue/cpue.csv")
+cpue <- read_csv("https://raw.githubusercontent.com/yukon-forecasting/data/2022-preseason/data/cpue/cpue.csv")
 ```
 
     ## Rows: 61 Columns: 5
@@ -42,7 +42,7 @@ cpue <- read_csv("https://raw.githubusercontent.com/yukon-forecasting/data/5b14d
     ## Delimiter: ","
     ## chr (1): source
     ## dbl (4): year, fifdj, qdj, mdj
-    ##
+    ## 
     ## ℹ Use `spec()` to retrieve the full column specification for this data.
     ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
@@ -98,7 +98,7 @@ p_pice <- ggplot(yukon, aes(pice, mdj)) +
   labs(
     x = "PICE",
     y = NULL)
-
+  
 ggsave("./figures/mdj_against_pice.png", width = 4, height = 4)
 
 p_all <- p_amatc + p_msstc + p_pice
@@ -164,9 +164,9 @@ models <- c(
 models
 ```
 
-    ## [1] "mdj ~ amatc"                "mdj ~ msstc"
-    ## [3] "mdj ~ pice"                 "mdj ~ amatc + msstc"
-    ## [5] "mdj ~ amatc + pice"         "mdj ~ msstc + pice"
+    ## [1] "mdj ~ amatc"                "mdj ~ msstc"               
+    ## [3] "mdj ~ pice"                 "mdj ~ amatc + msstc"       
+    ## [5] "mdj ~ amatc + pice"         "mdj ~ msstc + pice"        
     ## [7] "mdj ~ amatc + msstc + pice"
 
 # Set up selection
@@ -189,7 +189,7 @@ hindcast_year <- function(data, model, forecast_year) {
   # Extract response
   response_var = dimnames(attr(terms(as.formula(model)), "factors"))[[1]][1]
   actual <- new_data[[response_var]]
-
+  
   in_interval <- actual >= round_method(prediction_interval[1]) &&
     actual <= round_method(prediction_interval[2])
 
@@ -263,27 +263,27 @@ model_fifdj <- lm(fifdj ~ amatc + msstc + pice, data = subset(yukon, year < fore
 summary(model_fifdj)
 ```
 
-    ##
+    ## 
     ## Call:
-    ## lm(formula = fifdj ~ amatc + msstc + pice, data = subset(yukon,
+    ## lm(formula = fifdj ~ amatc + msstc + pice, data = subset(yukon, 
     ##     year < forecast_year))
-    ##
+    ## 
     ## Residuals:
-    ##    Min     1Q Median     3Q    Max
-    ## -9.501 -1.809  0.470  2.070  6.843
-    ##
+    ##    Min     1Q Median     3Q    Max 
+    ## -9.501 -1.809  0.470  2.070  6.843 
+    ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
+    ##             Estimate Std. Error t value Pr(>|t|)    
     ## (Intercept)   9.6389     1.7835   5.405 2.01e-06 ***
     ## amatc        -0.6342     0.1753  -3.618 0.000712 ***
     ## msstc        -1.4217     0.3734  -3.808 0.000398 ***
-    ## pice         -0.9905     4.0428  -0.245 0.807496
+    ## pice         -0.9905     4.0428  -0.245 0.807496    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ##
+    ## 
     ## Residual standard error: 3.381 on 48 degrees of freedom
     ##   (9 observations deleted due to missingness)
-    ## Multiple R-squared:  0.552,  Adjusted R-squared:  0.524
+    ## Multiple R-squared:  0.552,  Adjusted R-squared:  0.524 
     ## F-statistic: 19.71 on 3 and 48 DF,  p-value: 1.813e-08
 
 ``` r
@@ -297,27 +297,27 @@ model_qdj <- lm(qdj ~ amatc + msstc + pice, data = subset(yukon, year < forecast
 summary(model_qdj)
 ```
 
-    ##
+    ## 
     ## Call:
-    ## lm(formula = qdj ~ amatc + msstc + pice, data = subset(yukon,
+    ## lm(formula = qdj ~ amatc + msstc + pice, data = subset(yukon, 
     ##     year < forecast_year))
-    ##
+    ## 
     ## Residuals:
-    ##    Min     1Q Median     3Q    Max
-    ## -8.337 -1.710  0.170  1.576  6.358
-    ##
+    ##    Min     1Q Median     3Q    Max 
+    ## -8.337 -1.710  0.170  1.576  6.358 
+    ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
+    ##             Estimate Std. Error t value Pr(>|t|)    
     ## (Intercept)  12.3528     1.6693   7.400 1.80e-09 ***
-    ## amatc        -0.5304     0.1641  -3.233  0.00222 **
+    ## amatc        -0.5304     0.1641  -3.233  0.00222 ** 
     ## msstc        -1.6284     0.3495  -4.659 2.54e-05 ***
-    ## pice         -0.3449     3.7840  -0.091  0.92776
+    ## pice         -0.3449     3.7840  -0.091  0.92776    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ##
+    ## 
     ## Residual standard error: 3.165 on 48 degrees of freedom
     ##   (9 observations deleted due to missingness)
-    ## Multiple R-squared:  0.5915, Adjusted R-squared:  0.5659
+    ## Multiple R-squared:  0.5915, Adjusted R-squared:  0.5659 
     ## F-statistic: 23.17 on 3 and 48 DF,  p-value: 2.043e-09
 
 ``` r
@@ -331,27 +331,27 @@ model_mdj <- lm(mdj ~ amatc + msstc + pice, data = subset(yukon, year < forecast
 summary(model_mdj)
 ```
 
-    ##
+    ## 
     ## Call:
-    ## lm(formula = mdj ~ amatc + msstc + pice, data = subset(yukon,
+    ## lm(formula = mdj ~ amatc + msstc + pice, data = subset(yukon, 
     ##     year < forecast_year))
-    ##
+    ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max
-    ## -8.7769 -1.3147  0.2846  1.5585  6.7477
-    ##
+    ##     Min      1Q  Median      3Q     Max 
+    ## -8.7769 -1.3147  0.2846  1.5585  6.7477 
+    ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
+    ##             Estimate Std. Error t value Pr(>|t|)    
     ## (Intercept)  18.2899     1.5792  11.582 1.67e-15 ***
-    ## amatc        -0.2903     0.1552  -1.871   0.0675 .
+    ## amatc        -0.2903     0.1552  -1.871   0.0675 .  
     ## msstc        -1.8658     0.3306  -5.644 8.74e-07 ***
-    ## pice          0.7915     3.5796   0.221   0.8259
+    ## pice          0.7915     3.5796   0.221   0.8259    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ##
+    ## 
     ## Residual standard error: 2.994 on 48 degrees of freedom
     ##   (9 observations deleted due to missingness)
-    ## Multiple R-squared:  0.5993, Adjusted R-squared:  0.5742
+    ## Multiple R-squared:  0.5993, Adjusted R-squared:  0.5742 
     ## F-statistic: 23.93 on 3 and 48 DF,  p-value: 1.294e-09
 
 ``` r
@@ -407,7 +407,7 @@ kable(long_term_means)
 | variable | current_year_value | long_term_mean | cur_minus_ltm | range          |
 |:---------|-------------------:|---------------:|--------------:|:---------------|
 | AMATC    |             -2.330 |     -6.6050820 |     4.2750820 | -17.1 to 1.3   |
-| MSSTC    |              0.173 |     -0.4724590 |     0.6454590 | -3.8 to 2.8    |
+| MSSTC    |              0.221 |     -0.4724590 |     0.6934590 | -3.8 to 2.8    |
 | PICE     |              0.268 |      0.5439615 |    -0.2759615 | 0.078 to 0.784 |
 
 ## Hindcast all three models
@@ -445,7 +445,7 @@ hindcast <- do.call(rbind, lapply(hindcast_models, function(model) {
 hindcast$formula <- toupper(hindcast$formula)
 hindcast$formula <- ordered(hindcast$formula, c(
   "FIFDJ ~ AMATC + MSSTC + PICE",
-  "QDJ ~ AMATC + MSSTC + PICE",
+  "QDJ ~ AMATC + MSSTC + PICE", 
   "MDJ ~ AMATC + MSSTC + PICE"
 ))
 predicted_vs_observed <- ggplot(hindcast, aes(observed, predicted)) +
