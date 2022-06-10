@@ -252,23 +252,35 @@ kable(predictions)
 
 ```{r historicalcomparisons}
 long_term_means <- data.frame(
-  variable = c("AMATC", "MSSTC", "PICE"),
+  variable = c("AMATC", "MSSTC", "PICE", "FIFDJ", "QDJ", "MDJ"),
   current_year_value = c(
     mean(yukon$amatc[which(yukon$year == forecast_year)]),
     mean(yukon$msstc[which(yukon$year == forecast_year)]),
-    mean(yukon$pice[which(yukon$year == forecast_year)], na.rm = TRUE)
+    mean(yukon$pice[which(yukon$year == forecast_year)], na.rm = TRUE),
+    mean(yukon$fifdj[which(yukon$year == forecast_year)]),
+    mean(yukon$qdj[which(yukon$year == forecast_year)]),
+    mean(yukon$mdj[which(yukon$year == forecast_year)])
+    
   ),
   long_term_mean = c(
     mean(yukon$amatc[which(yukon$year < forecast_year)]),
     mean(yukon$msstc[which(yukon$year < forecast_year)]),
-    mean(yukon$pice[which(yukon$year < forecast_year)], na.rm = TRUE)
+    mean(yukon$pice[which(yukon$year < forecast_year)], na.rm = TRUE),
+    mean(yukon$fifdj[which(yukon$year < forecast_year)]),
+    mean(yukon$qdj[which(yukon$year < forecast_year)]),
+    mean(yukon$mdj[which(yukon$year < forecast_year)])
+
   )
 )
 long_term_means$cur_minus_ltm <- long_term_means$current_year_value - long_term_means$long_term_mean
 long_term_means$range <- c(
   paste(range(yukon$amatc[which(yukon$year < forecast_year)]), collapse = " to "),
   paste(range(yukon$msstc[which(yukon$year < forecast_year)]), collapse = " to "),
-  paste(range(yukon$pice[which(yukon$year < forecast_year)], na.rm = TRUE), collapse = " to ")
+  paste(range(yukon$pice[which(yukon$year < forecast_year)], na.rm = TRUE), collapse = " to "),
+  paste(range(yukon$fifdj[which(yukon$year < forecast_year)]), collapse = " to "),
+  paste(range(yukon$qdj[which(yukon$year < forecast_year)]), collapse = " to "),
+  paste(range(yukon$mdj[which(yukon$year < forecast_year)]), collapse = " to ")
+
 )
 kable(long_term_means)
 ```
