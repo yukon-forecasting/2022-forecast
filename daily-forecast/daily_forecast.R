@@ -64,6 +64,27 @@ ggplot() +
 
 ggsave("daily-forecast/figures/daily_forecast.png", width = 5, height = 2.5)
 
+# Chart 1
+
+ggplot() +
+  geom_line(data = combined, aes(date, pccpue, color = curve), size = 1) +
+  geom_point(data = combined, aes(date, pccpue, shape = curve, color = curve)) +
+  geom_ribbon(data = subset(combined, curve == "Estimated"), aes(x=date, ymin = 0, ymax = pccpue), fill = "cyan", alpha = 0.5) +
+  geom_col(data = predictions, aes(x = date, y = percent), fill = "#4a86e8", width = 1) +
+  scale_shape_manual(values = c(NA, 19)) +
+  scale_color_manual(values = c("#4a86e8", "cyan")) +
+  labs(x = "Date", y = "Percent of Run") +
+  theme_bw() +
+  theme(legend.position = "right",
+        legend.title = element_blank(),
+        legend.background = element_blank(),
+        legend.text.align = 1,
+        legend.margin = margin(0, 0, 0, 0),
+        legend.box.margin = margin(0, 0, 0, 0))
+
+ggsave("daily-forecast/figures/chart_one.png", width = 6, height = 3)
+
+
 # Chart 2: Finaly CPUE time series
 final_cpue <- data.frame(day = inseason$day,
                          estimate = inseason$ccpue / (logistic_curve[logistic_curve$day %in% inseason$day,"pccpue"][[1]] / 100))
