@@ -355,3 +355,19 @@ forecast_timeseries <- ggplot(hindcast, aes(year, diff)) +
   )
 forecast_timeseries
 ```
+
+## Long-term summaries
+
+### Median dates over time
+```{r mdj_anomalies, fig.width=6, fig.height=2}
+yukon <- yukon %>% mutate(diff = mdj - mean(mdj, na.rm = TRUE))
+ggplot(data = yukon, aes(year, diff)) +
+  geom_line() +
+  geom_point() +
+  geom_ribbon(aes(ymin = 0, ymax = diff), fill = "gray", alpha = 0.5) +
+  geom_hline(yintercept=0) +
+  xlab("Year") +
+  ylab(NULL) +
+  ggtitle("Run Timing Anomalies (days), 1961–2021", 
+          subtitle = "+ = later, - = earlier")
+```

@@ -25,6 +25,7 @@ theme_set(theme_bw())
 environment <- read_csv("https://raw.githubusercontent.com/yukon-forecasting/data/2022-preseason/data/environment/environment.csv")
 ```
 
+    ## `curl` package not installed, falling back to using `url()`
     ## Rows: 62 Columns: 4
     ## ── Column specification ────────────────────────────────────────────────────────
     ## Delimiter: ","
@@ -37,6 +38,7 @@ environment <- read_csv("https://raw.githubusercontent.com/yukon-forecasting/dat
 cpue <- read_csv("https://raw.githubusercontent.com/yukon-forecasting/data/2022-preseason/data/cpue/cpue.csv")
 ```
 
+    ## `curl` package not installed, falling back to using `url()`
     ## Rows: 61 Columns: 5
     ## ── Column specification ────────────────────────────────────────────────────────
     ## Delimiter: ","
@@ -383,23 +385,35 @@ kable(predictions)
 
 ``` r
 long_term_means <- data.frame(
-  variable = c("AMATC", "MSSTC", "PICE"),
+  variable = c("AMATC", "MSSTC", "PICE", "FIFDJ", "QDJ", "MDJ"),
   current_year_value = c(
     mean(yukon$amatc[which(yukon$year == forecast_year)]),
     mean(yukon$msstc[which(yukon$year == forecast_year)]),
-    mean(yukon$pice[which(yukon$year == forecast_year)], na.rm = TRUE)
+    mean(yukon$pice[which(yukon$year == forecast_year)], na.rm = TRUE),
+    mean(yukon$fifdj[which(yukon$year == forecast_year)]),
+    mean(yukon$qdj[which(yukon$year == forecast_year)]),
+    mean(yukon$mdj[which(yukon$year == forecast_year)])
+    
   ),
   long_term_mean = c(
     mean(yukon$amatc[which(yukon$year < forecast_year)]),
     mean(yukon$msstc[which(yukon$year < forecast_year)]),
-    mean(yukon$pice[which(yukon$year < forecast_year)], na.rm = TRUE)
+    mean(yukon$pice[which(yukon$year < forecast_year)], na.rm = TRUE),
+    mean(yukon$fifdj[which(yukon$year < forecast_year)]),
+    mean(yukon$qdj[which(yukon$year < forecast_year)]),
+    mean(yukon$mdj[which(yukon$year < forecast_year)])
+
   )
 )
 long_term_means$cur_minus_ltm <- long_term_means$current_year_value - long_term_means$long_term_mean
 long_term_means$range <- c(
   paste(range(yukon$amatc[which(yukon$year < forecast_year)]), collapse = " to "),
   paste(range(yukon$msstc[which(yukon$year < forecast_year)]), collapse = " to "),
-  paste(range(yukon$pice[which(yukon$year < forecast_year)], na.rm = TRUE), collapse = " to ")
+  paste(range(yukon$pice[which(yukon$year < forecast_year)], na.rm = TRUE), collapse = " to "),
+  paste(range(yukon$fifdj[which(yukon$year < forecast_year)]), collapse = " to "),
+  paste(range(yukon$qdj[which(yukon$year < forecast_year)]), collapse = " to "),
+  paste(range(yukon$mdj[which(yukon$year < forecast_year)]), collapse = " to ")
+
 )
 kable(long_term_means)
 ```
@@ -409,6 +423,9 @@ kable(long_term_means)
 | AMATC    |             -2.330 |     -6.6050820 |     4.2750820 | -17.1 to 1.3   |
 | MSSTC    |              0.221 |     -0.4724590 |     0.6934590 | -3.8 to 2.8    |
 | PICE     |              0.268 |      0.5439615 |    -0.2759615 | 0.078 to 0.784 |
+| FIFDJ    |                 NA |     13.8688525 |            NA | 5 to 23        |
+| QDJ      |                 NA |     16.2459016 |            NA | 6 to 26        |
+| MDJ      |                 NA |     21.2295082 |            NA | 10 to 32       |
 
 ## Hindcast all three models
 
@@ -489,3 +506,26 @@ forecast_timeseries
 ```
 
 ![](README_files/figure-gfm/forecast_timeseries-1.png)<!-- -->
+
+## Long-term summaries
+
+### Median dates over time
+
+``` r
+yukon <- yukon %>% mutate(diff = mdj - mean(mdj, na.rm = TRUE))
+ggplot(data = yukon, aes(year, diff)) +
+  geom_line() +
+  geom_point() +
+  geom_ribbon(aes(ymin = 0, ymax = diff), fill = "gray", alpha = 0.5) +
+  geom_hline(yintercept=0) +
+  xlab("Year") +
+  ylab(NULL) +
+  ggtitle("Run Timing Anomalies (days), 1961–2021", 
+          subtitle = "+ = later, - = earlier")
+```
+
+    ## Warning: Removed 1 row(s) containing missing values (geom_path).
+
+    ## Warning: Removed 1 rows containing missing values (geom_point).
+
+![](README_files/figure-gfm/mdj_anomalies-1.png)<!-- -->
